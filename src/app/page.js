@@ -24,6 +24,45 @@ export default function Home() {
       >
         Abrir Ruleta
       </Button>
+      <Button
+        variant="contained"
+        href="/plantaBaja"
+        color="primary"
+        sx={{
+          mt: 3,
+          px: { xs: 2, sm: 4 },
+          fontSize: { xs: "12px", sm: "16px" },
+        }}
+      >
+        planta baja
+      </Button>
+      <Button
+        variant="contained"
+        href="/plantaAlta"
+        color="primary"
+        sx={{
+          mt: 3,
+          px: { xs: 2, sm: 4 },
+          fontSize: { xs: "12px", sm: "16px" },
+        }}
+      >
+        planta Alta
+      </Button>
+      <Button
+        variant="contained"
+        href="/kioscos"
+        color="primary"
+        sx={{
+          mt: 3,
+          px: { xs: 2, sm: 4 },
+          fontSize: { xs: "12px", sm: "16px" },
+        }}
+      >
+       kiskos
+      </Button>
+
+
+
 
       {/* Modal que contiene la Ruleta */}
       <Modal open={isModalOpen} onClose={handleCloseModal}>
