@@ -45,7 +45,7 @@ export default function PlantaBaja() {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
+            bgcolor: "#82b684",
             boxShadow: 24,
             p: { xs: 2, sm: 4 },
             textAlign: "center",
@@ -64,7 +64,7 @@ export default function PlantaBaja() {
             }}
           >
             <DisabledByDefaultIcon
-              sx={{ fontSize: 40, color: "red", bgcolor: "white" }}
+            sx={{ fontSize: 40, color: "#82b684", bgcolor: "red" }}
             />
           </IconButton>
         </Box>

@@ -1,78 +1,51 @@
-"use client";
-import { useState } from "react";
+"use client"
+import Image from "next/image";
+import styles from "../app/styles/PlantaBaja.module.css"; // Archivo CSS
 import { Box, Button, IconButton, Modal } from "@mui/material";
 import Ruleta from "@/components/ruleta";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
+import { useState } from "react";
 
-export default function Home() {
-  const [isModalOpen, setModalOpen] = useState(false);
+export default function PlantaBaja() {
+    const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleOpenModal = () => setModalOpen(true);
-  const handleCloseModal = () => setModalOpen(false);
-
+    const handleOpenModal = () => setModalOpen(true);
+    const handleCloseModal = () => setModalOpen(false);
+  
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Button
-        onClick={handleOpenModal}
-        variant="contained"
-        color="primary"
-        sx={{
-          mt: 3,
-          px: { xs: 2, sm: 4 },
-          fontSize: { xs: "12px", sm: "16px" },
-        }}
-      >
-        Abrir Ruleta
-      </Button>
-      <Button
-        variant="contained"
-        href="/plantaBaja"
-        color="primary"
-        sx={{
-          mt: 3,
-          px: { xs: 2, sm: 4 },
-          fontSize: { xs: "12px", sm: "16px" },
-        }}
-      >
-        planta baja
-      </Button>
-      <Button
-        variant="contained"
-        href="/plantaAlta"
-        color="primary"
-        sx={{
-          mt: 3,
-          px: { xs: 2, sm: 4 },
-          fontSize: { xs: "12px", sm: "16px" },
-        }}
-      >
-        planta Alta
-      </Button>
-      <Button
-        variant="contained"
-        href="/kioscos"
-        color="primary"
-        sx={{
-          mt: 3,
-          px: { xs: 2, sm: 4 },
-          fontSize: { xs: "12px", sm: "16px" },
-        }}
-      >
-       kiskos
-      </Button>
+    <>
+    
+    <div className={styles.container}>
+      <div className={styles.imageContainer}>
+        {/* Imagen de fondo responsiva */}
+        <Image
+          src="/mapa/plantaBaja.png"
+          alt="Mapa de fondo"
+          layout="fill"
+          objectFit="contain" // Asegura que la imagen mantenga su proporción
+          className={styles.backgroundImage}
+        />
+        {/* Imagen superpuesta responsiva */}
+        <Image
+          src="/gif/open2.gif"
+          alt="Indicador"
+          width={50}
+          height={50}
+          className={styles.overlayImage}
+          onClick={handleOpenModal}
+        />
+      </div>
+    </div>
 
-
-
-
-      {/* Modal que contiene la Ruleta */}
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
+          {/* Modal que contiene la Ruleta */}
+          <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
+            bgcolor: "#82b684",
             boxShadow: 24,
             p: { xs: 2, sm: 4 },
             textAlign: "center",
@@ -91,11 +64,12 @@ export default function Home() {
             }}
           >
             <DisabledByDefaultIcon
-              sx={{ fontSize: 40, color: "red", bgcolor: "white" }}
+            sx={{ fontSize: 40, color: "#82b684", bgcolor: "red" }}
             />
           </IconButton>
         </Box>
       </Modal>
-    </div>
+    </>
+
   );
 }
