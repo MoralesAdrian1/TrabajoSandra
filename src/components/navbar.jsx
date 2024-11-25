@@ -8,6 +8,8 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import StairsIcon from '@mui/icons-material/Stairs';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import InstruccionesModal from './instrucciones';
+import { useState } from 'react';
 
 const GlowingButton = styled(Button)(({ theme, gradient }) => ({
   position: 'relative',
@@ -45,6 +47,14 @@ const GlowingButton = styled(Button)(({ theme, gradient }) => ({
 }));
 
 export default function NavBar() {
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: "#82b684" }}>
@@ -88,12 +98,13 @@ export default function NavBar() {
           <GlowingButton
             sx={{ color: "black", width: "200px", marginBottom: 1 }}
             gradient="linear-gradient(90deg, #f5f5f5, #e0e0e0)"
-            href="/instrucciones"
+            onClick={handleOpenModal}
           >
             Como Jugar
           </GlowingButton>
         </Toolbar>
       </AppBar>
+      <InstruccionesModal open={openModal} handleClose={handleCloseModal} />
     </Box>
   );
 }
