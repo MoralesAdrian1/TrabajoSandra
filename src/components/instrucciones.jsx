@@ -8,17 +8,19 @@ import Button from '@mui/material/Button';
 import Image from 'next/image';
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
 import { IconButton } from '@mui/material';
+import { Height } from '@mui/icons-material';
 
 const modalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 350,
+  Height: 700,
   bgcolor: '#82b684',
   border: '2px solid #000',
   boxShadow: 24,
-//   p: 1,
+  p: 1,
 };
 
 export default function InstruccionesModal({ open, handleClose }) {
@@ -33,8 +35,8 @@ export default function InstruccionesModal({ open, handleClose }) {
       <Image
           src="/instrucciones.png"
           alt="Instrucciones"
-          width={400}
-          height={800}
+          width={350}
+          height={700}
         />
         <IconButton
             onClick={handleClose}
