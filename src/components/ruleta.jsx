@@ -45,16 +45,17 @@ export default function Ruleta() {
   const [size, setSize] = useState(500); // Tamaño dinámico de la ruleta
   const [result, setResult] = useState(null); // Resultado de la ruleta
   const [isResultModalOpen, setResultModalOpen] = useState(false); // Controla el modal del resultado
-  const options = [
-    "#8B0000", // Soft Red
-    "#00008B", // Soft Blue
-    "#FFD700", // Soft Yellow
-    "#000000", // Soft Black
-    "#F0F8FF", // Soft White
-  ]; // Colores derivados de la gama #82b684
+
+  const allOptions = [
+    { color: "#8B0000", text: "Rojo" },
+    { color: "#00008B", text: "Azul" },
+    { color: "#FFD700", text: "Amarillo" },
+    { color: "#000000", text: "Negro" },
+    { color: "#F0F8FF", text: "Blanco" },
+  ]; // Colores y textos
+  const [availableOptions, setAvailableOptions] = useState([...allOptions]); // Colores disponibles
 
   let startAngle = 0;
-  const arc = Math.PI / (options.length / 2);
   let spinTimeout = null;
 
   let spinArcStart = 10;
@@ -76,7 +77,7 @@ export default function Ruleta() {
     if (canvasRef.current) {
       drawRouletteWheel();
     }
-  }, [size]);
+  }, [size, availableOptions]);
 
   const drawRouletteWheel = () => {
     const canvas = canvasRef.current;
@@ -95,10 +96,12 @@ export default function Ruleta() {
 
     ctx.font = `${size / 25}px Helvetica, Arial`;
 
-    for (let i = 0; i < options.length; i++) {
+    const arc = Math.PI * 2 / availableOptions.length; // Ajusta el tamaño del arco dinámicamente
+
+    availableOptions.forEach((option, i) => {
       const angle = startAngle + i * arc;
 
-      ctx.fillStyle = options[i];
+      ctx.fillStyle = option.color;
 
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, outsideRadius, angle, angle + arc, false);
@@ -113,10 +116,9 @@ export default function Ruleta() {
         size / 2 + Math.sin(angle + arc / 2) * textRadius
       );
       ctx.rotate(angle + arc / 2 + Math.PI / 2);
-      const text = ["Rojo", "Azul", "Amarillo", "Negro", "Blanco"][i];
-      ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+      ctx.fillText(option.text, -ctx.measureText(option.text).width / 2, 0);
       ctx.restore();
-    }
+    });
 
     // Flecha
     ctx.fillStyle = "purple";
@@ -154,12 +156,25 @@ export default function Ruleta() {
 
   const stopRotateWheel = () => {
     clearTimeout(spinTimeout);
+    const arc = Math.PI * 2 / availableOptions.length;
     const degrees = (startAngle * 180) / Math.PI + 90;
     const arcd = (arc * 180) / Math.PI;
     const index = Math.floor((360 - (degrees % 360)) / arcd);
 
-    setResult(options[index]); // Establecer el resultado seleccionado
-    setResultModalOpen(true); // Abrir el modal del resultado
+    const selectedOption = availableOptions[index];
+    setResult(selectedOption);
+
+    // Actualizar los colores disponibles
+    const remainingOptions = availableOptions.filter(
+      (option) => option !== selectedOption
+    );
+    if (remainingOptions.length === 0) {
+      setAvailableOptions([...allOptions]); // Reiniciar la lista si todos los colores han salido
+    } else {
+      setAvailableOptions(remainingOptions);
+    }
+
+    setResultModalOpen(true);
     setTimeout(() => {
       triggerConfetti();
     }, 300);
@@ -178,7 +193,6 @@ export default function Ruleta() {
         origin: { x: 0.5, y: 10 }, // Centrado sobre el modal
       });
 
-      // Limpia el canvas después de un tiempo
       setTimeout(() => {
         confettiCanvas.remove();
       }, 3000);
@@ -193,7 +207,6 @@ export default function Ruleta() {
 
   return (
     <>
-      {/* Portal para el contenedor de confeti */}
       {ReactDOM.createPortal(
         <div
           id="confetti-container"
@@ -203,7 +216,7 @@ export default function Ruleta() {
             left: 0,
             width: "100%",
             height: "100%",
-            zIndex: 3000, // Más alto que cualquier modal
+            zIndex: 3000,
             pointerEvents: "none",
           }}
         ></div>,
@@ -255,18 +268,10 @@ export default function Ruleta() {
               <Typography
                 variant="h2"
                 sx={{
-                  color: result,
+                  color: result.color,
                 }}
               >
-                {
-                  {
-                    "#8B0000": "Rojo",
-                    "#00008B": "Azul",
-                    "#FFD700": "Amarillo",
-                    "#000000": "Negro",
-                    "#F0F8FF": "Blanco",
-                  }[result]
-                }
+                {result.text}
               </Typography>
             )}
 
