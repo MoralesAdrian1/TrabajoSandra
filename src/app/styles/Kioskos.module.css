@@ -36,17 +36,6 @@
     z-index: 2; /* Coloca la imagen encima del fondo */
   }
   
-  /* Media Queries para smartphones grandes (ancho entre 600px y 480px) */
-  @media (max-width: 600px) {
-    .overlayImage {
-      top: 15%; /* Ajusta para smartphones */
-      left: 70%; /* Mantiene el centrado horizontal */
-      transform: translate(-50%, -50%);
-      width: 35px; /* Imagen más pequeña */
-      height: 35px; /* Mantiene proporción */
-    }
-  }
-  
   /* Media Queries para smartphones pequeños (ancho menor a 480px) */
   @media (max-width: 480px) {
     .overlayImage {
@@ -86,18 +75,6 @@
     top: 60px; /* Cambia estos valores */
     left: 250px; /* Cambia estos valores */
     z-index: 2; /* Coloca la imagen encima del fondo */
-  }
-  
-  
-  /* Media Queries para pantallas móviles */
-  @media (max-width: 600px) {
-    .overlayImage2 {
-      top: 15%; /* Ajusta para smartphones */
-      left: 70%; /* Mantiene el centrado horizontal */
-      transform: translate(-50%, -50%);
-      width: 35px; /* Imagen más pequeña */
-      height: 35px; /* Mantiene proporción */
-    }
   }
   
   /* Media Queries para smartphones pequeños (ancho menor a 480px) */

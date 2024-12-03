@@ -1,9 +1,8 @@
-"use client";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom"; // Importamos ReactDOM para usar Portals
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import confetti from "canvas-confetti"; // Importamos la biblioteca
+import confetti from "canvas-confetti";
 
 const GlowingButton = styled(Button)(({ theme, gradient }) => ({
   position: "relative",
@@ -12,8 +11,8 @@ const GlowingButton = styled(Button)(({ theme, gradient }) => ({
   color: "white",
   textTransform: "uppercase",
   fontWeight: "bold",
-  fontSize: "0.8rem", // Tamaño reducido del texto
-  padding: "0.5rem 1rem", // Reduce el tamaño del botón
+  fontSize: "0.8rem",
+  padding: "0.5rem 1rem",
   borderRadius: "5px",
   cursor: "pointer",
   "&:before": {
@@ -25,15 +24,11 @@ const GlowingButton = styled(Button)(({ theme, gradient }) => ({
     height: "100%",
     background: "rgba(255, 255, 255, 0.4)",
     transform: "skewX(-45deg)",
-    animation: "glowAnimation 3s linear infinite", // Animación continua
+    animation: "glowAnimation 3s linear infinite",
   },
   "@keyframes glowAnimation": {
-    "0%": {
-      left: "-150%",
-    },
-    "100%": {
-      left: "150%",
-    },
+    "0%": { left: "-150%" },
+    "100%": { left: "150%" },
   },
   "&:hover": {
     boxShadow: "0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3)",
@@ -42,9 +37,9 @@ const GlowingButton = styled(Button)(({ theme, gradient }) => ({
 
 export default function Ruleta() {
   const canvasRef = useRef(null);
-  const [size, setSize] = useState(500); // Tamaño dinámico de la ruleta
-  const [result, setResult] = useState(null); // Resultado de la ruleta
-  const [isResultModalOpen, setResultModalOpen] = useState(false); // Controla el modal del resultado
+  const [size, setSize] = useState(500);
+  const [result, setResult] = useState(null);
+  const [isResultModalOpen, setResultModalOpen] = useState(false);
 
   const allOptions = [
     { color: "#8B0000", text: "Rojo" },
@@ -52,8 +47,12 @@ export default function Ruleta() {
     { color: "#FFD700", text: "Amarillo" },
     { color: "#000000", text: "Negro" },
     { color: "#F0F8FF", text: "Blanco" },
-  ]; // Colores y textos
-  const [availableOptions, setAvailableOptions] = useState([...allOptions]); // Colores disponibles
+  ];
+
+  const [availableOptions, setAvailableOptions] = useState(() => {
+    const savedOptions = localStorage.getItem("availableOptions");
+    return savedOptions ? JSON.parse(savedOptions) : [...allOptions];
+  });
 
   let startAngle = 0;
   let spinTimeout = null;
@@ -68,7 +67,7 @@ export default function Ruleta() {
       setSize(newSize);
     };
 
-    handleResize(); // Ajusta el tamaño inicial
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -85,9 +84,9 @@ export default function Ruleta() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const outsideRadius = size / 2 - 20; // Radio externo
-    const textRadius = size / 2 - 40; // Donde se dibuja el texto
-    const insideRadius = 0; // Cambiado a 0 para extender los segmentos hasta el centro
+    const outsideRadius = size / 2 - 20;
+    const textRadius = size / 2 - 40;
+    const insideRadius = 0;
 
     ctx.clearRect(0, 0, size, size);
 
@@ -96,7 +95,7 @@ export default function Ruleta() {
 
     ctx.font = `${size / 25}px Helvetica, Arial`;
 
-    const arc = Math.PI * 2 / availableOptions.length; // Ajusta el tamaño del arco dinámicamente
+    const arc = Math.PI * 2 / availableOptions.length;
 
     availableOptions.forEach((option, i) => {
       const angle = startAngle + i * arc;
@@ -105,7 +104,7 @@ export default function Ruleta() {
 
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, outsideRadius, angle, angle + arc, false);
-      ctx.lineTo(size / 2, size / 2); // Línea hacia el centro
+      ctx.lineTo(size / 2, size / 2);
       ctx.fill();
       ctx.stroke();
 
@@ -120,7 +119,6 @@ export default function Ruleta() {
       ctx.restore();
     });
 
-    // Flecha
     ctx.fillStyle = "purple";
     ctx.beginPath();
     ctx.moveTo(size / 2 - 4, size / 2 - (outsideRadius + 5));
@@ -164,39 +162,33 @@ export default function Ruleta() {
     const selectedOption = availableOptions[index];
     setResult(selectedOption);
 
-    // Actualizar los colores disponibles
     const remainingOptions = availableOptions.filter(
       (option) => option !== selectedOption
     );
     if (remainingOptions.length === 0) {
-      setAvailableOptions([...allOptions]); // Reiniciar la lista si todos los colores han salido
+      localStorage.removeItem("availableOptions");
     } else {
-      setAvailableOptions(remainingOptions);
+      localStorage.setItem("availableOptions", JSON.stringify(remainingOptions));
     }
 
+    setAvailableOptions(remainingOptions);
     setResultModalOpen(true);
     setTimeout(() => {
       triggerConfetti();
     }, 300);
   };
 
+  const resetRoulette = () => {
+    localStorage.removeItem("availableOptions");
+    setAvailableOptions([...allOptions]);
+  };
+
   const triggerConfetti = () => {
-    const confettiContainer = document.getElementById("confetti-container");
-    if (confettiContainer) {
-      const confettiCanvas = document.createElement("canvas");
-      confettiContainer.appendChild(confettiCanvas);
-
-      const confettiInstance = confetti.create(confettiCanvas, { resize: true });
-      confettiInstance({
-        particleCount: 100,
-        spread: 70,
-        origin: { x: 0.5, y: 10 }, // Centrado sobre el modal
-      });
-
-      setTimeout(() => {
-        confettiCanvas.remove();
-      }, 3000);
-    }
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { x: 0.5, y: 0.5 },
+    });
   };
 
   const easeOut = (t, b, c, d) => {
@@ -206,84 +198,75 @@ export default function Ruleta() {
   };
 
   return (
-    <>
-      {ReactDOM.createPortal(
-        <div
-          id="confetti-container"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 3000,
-            pointerEvents: "none",
-          }}
-        ></div>,
-        document.body
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        mt: 2,
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        width={size}
+        height={size}
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+        }}
+      ></canvas>
+
+      <GlowingButton
+        gradient="linear-gradient(90deg, #8B0000, #00008B)"
+        onClick={spin}
+        disabled={availableOptions.length === 0}
+      >
+        Girar Ruleta
+      </GlowingButton>
+
+      {availableOptions.length === 0 && (
+        <GlowingButton
+          gradient="linear-gradient(90deg, #FFD700, #FF6347)"
+          onClick={resetRoulette}
+        >
+          Reiniciar Ruleta
+        </GlowingButton>
       )}
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          mt: 2,
-          bgcolor: "#82b684",
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          width={size}
-          height={size}
-          style={{
-            maxWidth: "100%",
-            height: "auto",
+      <Modal open={isResultModalOpen} onClose={() => setResultModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "white",
+            boxShadow: 24,
+            p: 4,
+            textAlign: "center",
+            borderRadius: "10px",
+            width: "300px",
           }}
-        ></canvas>
-
-        <GlowingButton
-          gradient="linear-gradient(90deg, #8B0000, #00008B)"
-          onClick={spin}
         >
-          Girar Ruleta
-        </GlowingButton>
-
-        <Modal open={isResultModalOpen} onClose={() => setResultModalOpen(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "#82b684",
-              boxShadow: 24,
-              p: 4,
-              textAlign: "center",
-              borderRadius: "10px",
-              width: "300px",
-            }}
-          >
-            {result && (
-              <Typography
-                variant="h2"
-                sx={{
-                  color: result.color,
-                }}
-              >
-                {result.text}
-              </Typography>
-            )}
-
-            <GlowingButton
-              gradient="linear-gradient(90deg, #8B0000, #00008B)"
-              onClick={() => setResultModalOpen(false)}
+          {result && (
+            <Typography
+              variant="h2"
+              sx={{
+                color: result.color,
+              }}
             >
-              Cerrar
-            </GlowingButton>
-          </Box>
-        </Modal>
-      </Box>
-    </>
+              {result.text}
+            </Typography>
+          )}
+
+          <GlowingButton
+            gradient="linear-gradient(90deg, #8B0000, #00008B)"
+            onClick={() => setResultModalOpen(false)}
+          >
+            Cerrar
+          </GlowingButton>
+        </Box>
+      </Modal>
+    </Box>
   );
 }
