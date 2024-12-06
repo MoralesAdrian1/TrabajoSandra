@@ -33,7 +33,7 @@ export default function InstruccionesModal({ open, handleClose }) {
     >
       <Box sx={modalStyle}>
       <Image
-          src="/instrucciones.png"
+          src="/instrucciones2.png"
           alt="Instrucciones"
           width={350}
           height={700}
